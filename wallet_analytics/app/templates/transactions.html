@@ -1,0 +1,210 @@
+{% extends "base.html" %}
+{% block title %}Transactions - TON Analytics{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <div>
+                <h4 class="fw-bold mb-0">Transactions</h4>
+                <small class="text-muted">{{ total }} transactions found</small>
+            </div>
+            <div class="d-flex gap-2">
+                <a href="{{ url_for('dashboard.index') }}" class="btn btn-sm btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-1"></i>Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card bg-dark border-secondary mb-4">
+    <div class="card-body">
+        <form method="GET" class="row g-2 align-items-end">
+            <div class="col-md-2">
+                <label class="form-label small text-muted">Direction</label>
+                <select name="direction" class="form-select form-select-sm bg-dark text-light border-secondary">
+                    <option value="ALL" {% if direction == 'ALL' %}selected{% endif %}>All</option>
+                    <option value="IN" {% if direction == 'IN' %}selected{% endif %}>Incoming</option>
+                    <option value="OUT" {% if direction == 'OUT' %}selected{% endif %}>Outgoing</option>
+                    <option value="SELF" {% if direction == 'SELF' %}selected{% endif %}>Self</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small text-muted">Min Amount</label>
+                <input type="number" step="any" name="min_amount" class="form-control form-control-sm bg-dark text-light border-secondary" placeholder="0" value="{{ min_amount or '' }}">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small text-muted">Max Amount</label>
+                <input type="number" step="any" name="max_amount" class="form-control form-control-sm bg-dark text-light border-secondary" placeholder="∞" value="{{ max_amount or '' }}">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small text-muted">Date From</label>
+                <input type="date" name="date_from" class="form-control form-control-sm bg-dark text-light border-secondary" value="{{ date_from }}">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small text-muted">Date To</label>
+                <input type="date" name="date_to" class="form-control form-control-sm bg-dark text-light border-secondary" value="{{ date_to }}">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small text-muted">Search</label>
+                <input type="text" name="search" class="form-control form-control-sm bg-dark text-light border-secondary" placeholder="Hash, address..." value="{{ search }}">
+            </div>
+            <div class="col-12">
+                <button type="submit" class="btn btn-sm btn-primary"><i class="bi bi-search me-1"></i>Filter</button>
+                <a href="{{ url_for('transactions.index') }}" class="btn btn-sm btn-outline-secondary">Clear</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card bg-dark border-secondary">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-dark table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Type</th>
+                        <th>Asset</th>
+                        <th>Amount</th>
+                        <th>From / To</th>
+                        <th>Fee</th>
+                        <th>Status</th>
+                        <th>Tx</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if transactions %}
+                    {% for tx in transactions %}
+                    <tr class="tx-row" data-tx='{{ tx|serialize_tx }}' style="cursor: pointer;">
+                        <td>
+                            <small>{{ tx.timestamp.strftime('%d %b %Y %H:%M') if tx.timestamp else 'N/A' }}</small>
+                        </td>
+                        <td>
+                            {% if tx.direction == 'IN' %}
+                            <span class="badge bg-success">IN</span>
+                            {% elif tx.direction == 'OUT' %}
+                            <span class="badge bg-danger">OUT</span>
+                            {% elif tx.direction == 'SELF' %}
+                            <span class="badge bg-secondary">SELF</span>
+                            {% else %}
+                            <span class="badge bg-warning text-dark">{{ tx.direction }}</span>
+                            {% endif %}
+                        </td>
+                        <td><small>{{ tx.asset_symbol or 'TON' }}</small></td>
+                        <td class="{% if tx.direction == 'IN' %}text-success{% elif tx.direction == 'OUT' %}text-danger{% endif %}">
+                            <small class="fw-bold">
+                                {% if tx.direction == 'IN' %}+{% elif tx.direction == 'OUT' %}-{% endif %}{{ "%.4f"|format(tx.amount|float) }} {{ tx.asset_symbol or 'TON' }}
+                            </small>
+                        </td>
+                        <td>
+                            <small class="text-muted">
+                                {% if tx.direction == 'IN' %}
+                                    {{ tx.sender[:10] if tx.sender else 'N/A' }}...
+                                {% elif tx.direction == 'OUT' %}
+                                    {{ tx.receiver[:10] if tx.receiver else 'N/A' }}...
+                                {% else %}
+                                    {{ tx.sender[:10] if tx.sender else '' }}{% if tx.receiver %} → {{ tx.receiver[:10] }}...{% endif %}
+                                {% endif %}
+                            </small>
+                        </td>
+                        <td><small class="text-muted">{{ "%.6f"|format(tx.fee|float) }}</small></td>
+                        <td>
+                            <span class="badge bg-success-subtle text-success">{{ tx.status }}</span>
+                        </td>
+                        <td>
+                            <a href="https://tonviewer.com/transaction/{{ tx.tx_hash }}" target="_blank" class="btn btn-sm btn-outline-info py-0" onclick="event.stopPropagation();">
+                                <i class="bi bi-box-arrow-up-right"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {% else %}
+                    <tr>
+                        <td colspan="8" class="text-center text-muted py-4">
+                            No transactions found matching your filters.
+                        </td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {% if total_pages > 1 %}
+    <div class="card-footer bg-dark border-secondary d-flex flex-wrap justify-content-between align-items-center gap-2">
+        <div class="d-flex align-items-center gap-2">
+            <span class="text-muted small">Per page:</span>
+            {% for ps in page_sizes %}
+            <a href="?page=1&per_page={{ ps }}&direction={{ direction }}&search={{ search }}" class="btn btn-sm {% if per_page == ps %}btn-primary{% else %}btn-outline-secondary{% endif %} py-0">{{ ps }}</a>
+            {% endfor %}
+        </div>
+        <nav>
+            <ul class="pagination pagination-sm mb-0">
+                <li class="page-item {% if page <= 1 %}disabled{% endif %}">
+                    <a class="page-link" href="?page={{ page - 1 }}&per_page={{ per_page }}&direction={{ direction }}&search={{ search }}&min_amount={{ min_amount or '' }}&max_amount={{ max_amount or '' }}&date_from={{ date_from }}&date_to={{ date_to }}">Prev</a>
+                </li>
+                {% for p in range(1, total_pages + 1) %}
+                {% if p <= 3 or p > total_pages - 3 or (p >= page - 1 and p <= page + 1) %}
+                <li class="page-item {% if p == page %}active{% endif %}">
+                    <a class="page-link" href="?page={{ p }}&per_page={{ per_page }}&direction={{ direction }}&search={{ search }}&min_amount={{ min_amount or '' }}&max_amount={{ max_amount or '' }}&date_from={{ date_from }}&date_to={{ date_to }}">{{ p }}</a>
+                </li>
+                {% elif p == 4 or p == total_pages - 3 %}
+                <li class="page-item disabled"><span class="page-link">...</span></li>
+                {% endif %}
+                {% endfor %}
+                <li class="page-item {% if page >= total_pages %}disabled{% endif %}">
+                    <a class="page-link" href="?page={{ page + 1 }}&per_page={{ per_page }}&direction={{ direction }}&search={{ search }}&min_amount={{ min_amount or '' }}&max_amount={{ max_amount or '' }}&date_from={{ date_from }}&date_to={{ date_to }}">Next</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    {% endif %}
+</div>
+
+<div class="modal fade" id="txModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content bg-dark border-secondary">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title fw-bold">Transaction Details</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="txModalBody"></div>
+            <div class="modal-footer border-secondary">
+                <a href="#" target="_blank" class="btn btn-outline-info" id="txExplorerLink">
+                    <i class="bi bi-box-arrow-up-right me-1"></i>View on Explorer
+                </a>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.querySelectorAll('.tx-row').forEach(row => {
+    row.addEventListener('click', function() {
+        const tx = JSON.parse(this.dataset.tx);
+        const body = document.getElementById('txModalBody');
+        body.innerHTML = `
+            <table class="table table-dark table-sm mb-0">
+                <tr><td class="text-muted" style="width:140px;">Transaction Hash</td><td><code>${tx.tx_hash}</code></td></tr>
+                <tr><td class="text-muted">Date</td><td>${tx.timestamp ? new Date(tx.timestamp).toLocaleString() : 'N/A'}</td></tr>
+                <tr><td class="text-muted">Block / LT</td><td>${tx.lt || 'N/A'}</td></tr>
+                <tr><td class="text-muted">Direction</td><td><span class="badge bg-${tx.direction === 'IN' ? 'success' : tx.direction === 'OUT' ? 'danger' : 'secondary'}">${tx.direction}</span></td></tr>
+                <tr><td class="text-muted">Sender</td><td><code>${tx.sender || 'N/A'}</code></td></tr>
+                <tr><td class="text-muted">Receiver</td><td><code>${tx.receiver || 'N/A'}</code></td></tr>
+                <tr><td class="text-muted">Amount</td><td class="fw-bold">${tx.direction === 'IN' ? '+' : tx.direction === 'OUT' ? '-' : ''}${tx.amount.toFixed(4)} ${tx.asset_symbol || 'TON'}</td></tr>
+                <tr><td class="text-muted">Fee</td><td>${tx.fee.toFixed(6)} TON</td></tr>
+                <tr><td class="text-muted">Comment</td><td>${tx.comment || 'None'}</td></tr>
+                <tr><td class="text-muted">Status</td><td><span class="badge bg-success">${tx.status}</span></td></tr>
+            </table>
+        `;
+        document.getElementById('txExplorerLink').href = tx.explorer_url;
+        new bootstrap.Modal(document.getElementById('txModal')).show();
+    });
+});
+</script>
+{% endblock %}

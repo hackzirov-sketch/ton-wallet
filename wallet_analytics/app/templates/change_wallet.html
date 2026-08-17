@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Change Wallet - TON Analytics{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center" style="min-height: 70vh;">
+    <div class="col-md-6 col-lg-5">
+        <div class="card bg-dark border-secondary shadow-lg">
+            <div class="card-body p-5">
+                <h2 class="card-title fw-bold mb-3">Change Connected Wallet</h2>
+
+                {% if current_wallet %}
+                <div class="mb-3">
+                    <label class="form-label text-muted">Current Wallet</label>
+                    <div class="form-control bg-dark text-light border-secondary" style="cursor: default;">
+                        {{ current_wallet[:10] }}...{{ current_wallet[-6:] }}
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="alert alert-warning">
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    Change connected wallet?<br>
+                    <small>Current analytics data will be replaced with data from the new wallet.</small>
+                </div>
+
+                <form method="POST" id="changeForm">
+                    <input type="hidden" name="confirm" value="yes" id="confirmInput">
+
+                    <div class="mb-3">
+                        <label for="wallet_address" class="form-label fw-semibold">New TON Wallet Address</label>
+                        <input
+                            type="text"
+                            class="form-control bg-dark text-light border-secondary"
+                            id="wallet_address"
+                            name="wallet_address"
+                            placeholder="EQ..."
+                            required
+                            autocomplete="off"
+                            spellcheck="false"
+                        >
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <a href="{{ url_for('dashboard.index') }}" class="btn btn-outline-secondary flex-fill">Cancel</a>
+                        <button type="submit" class="btn btn-warning flex-fill fw-semibold" id="submitBtn">
+                            <i class="bi bi-arrow-repeat me-1"></i>Change Wallet
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.getElementById('changeForm').addEventListener('submit', function(e) {
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Changing...';
+});
+</script>
+{% endblock %}
