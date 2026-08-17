@@ -1,4 +1,5 @@
 import logging
+import base64
 from decimal import Decimal
 from datetime import datetime, timezone
 from typing import Optional
@@ -24,30 +25,46 @@ def _parse_timestamp(ts) -> datetime:
     return datetime.now(timezone.utc)
 
 
+def _normalize_address(address: str) -> str:
+    if not address:
+        return ""
+    clean = address.strip().replace("-", "+").replace("_", "/")
+    try:
+        raw = base64.b64decode(clean)
+        return raw.hex().lower()
+    except Exception:
+        return address.lower().strip()
+
+
 def _classify_direction(tx: dict, wallet_address: str) -> str:
     in_msg = tx.get("in_msg", {})
     out_msgs = tx.get("out_msgs", [])
 
-    wallet_lower = wallet_address.lower()
+    wallet_norm = _normalize_address(wallet_address)
 
     in_source = in_msg.get("source", "")
     in_dest = in_msg.get("destination", "")
+    in_source_norm = _normalize_address(in_source)
+    in_dest_norm = _normalize_address(in_dest)
 
-    has_outgoing = any(
-        m.get("destination", "").lower() != wallet_lower and m.get("value", 0) > 0
-        for m in out_msgs
-    )
+    has_outgoing = False
+    for m in out_msgs:
+        dest = m.get("destination", "")
+        dest_norm = _normalize_address(dest)
+        if dest_norm and dest_norm != wallet_norm and m.get("value", 0) > 0:
+            has_outgoing = True
+            break
 
     if has_outgoing:
         return "OUT"
 
-    if in_source and in_source.lower() == wallet_lower:
-        if in_dest and in_dest.lower() == wallet_lower:
+    if in_source_norm and in_source_norm == wallet_norm:
+        if in_dest_norm and in_dest_norm == wallet_norm:
             return "SELF"
         return "SELF"
 
     if in_msg and in_msg.get("value", 0) > 0:
-        if in_dest and in_dest.lower() == wallet_lower:
+        if in_dest_norm and in_dest_norm == wallet_norm:
             return "IN"
 
     if in_msg and in_msg.get("value", 0) > 0:
@@ -59,6 +76,7 @@ def _classify_direction(tx: dict, wallet_address: str) -> str:
 def _extract_amount(tx: dict, direction: str, wallet_address: str) -> Decimal:
     in_msg = tx.get("in_msg", {})
     out_msgs = tx.get("out_msgs", [])
+    wallet_norm = _normalize_address(wallet_address)
 
     if direction == "IN":
         return _nano_to_ton(in_msg.get("value", 0))
@@ -66,7 +84,8 @@ def _extract_amount(tx: dict, direction: str, wallet_address: str) -> Decimal:
         total = Decimal("0")
         for m in out_msgs:
             dest = m.get("destination", "")
-            if dest and dest.lower() != wallet_address.lower():
+            dest_norm = _normalize_address(dest)
+            if dest_norm and dest_norm != wallet_norm:
                 total += _nano_to_ton(m.get("value", 0))
         return total
     elif direction == "SELF":
@@ -93,6 +112,7 @@ def _extract_comment(tx: dict) -> Optional[str]:
 
 def _store_transactions(wallet_address: str, raw_transactions: list) -> int:
     added = 0
+    wallet_norm = _normalize_address(wallet_address)
 
     for tx in raw_transactions:
         tx_hash = tx.get("hash", "")
@@ -112,7 +132,8 @@ def _store_transactions(wallet_address: str, raw_transactions: list) -> int:
         receiver = ""
         for m in out_msgs:
             dest = m.get("destination", "")
-            if dest and dest.lower() != wallet_address.lower():
+            dest_norm = _normalize_address(dest)
+            if dest_norm and dest_norm != wallet_norm:
                 receiver = dest
                 break
 
