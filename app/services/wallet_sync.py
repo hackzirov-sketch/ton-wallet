@@ -113,6 +113,7 @@ def _extract_comment(tx: dict) -> Optional[str]:
 def _store_transactions(wallet_address: str, raw_transactions: list) -> int:
     added = 0
     wallet_norm = _normalize_address(wallet_address)
+    logger.info("Storing %d raw transactions for %s", len(raw_transactions), wallet_address[:20])
 
     for tx in raw_transactions:
         tx_hash = tx.get("hash", "")
