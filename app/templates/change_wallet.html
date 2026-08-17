@@ -2,52 +2,59 @@
 {% block title %}Change Wallet - TON Analytics{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center align-items-center" style="min-height: 70vh;">
-    <div class="col-md-6 col-lg-5">
-        <div class="card bg-dark border-secondary shadow-lg">
-            <div class="card-body p-5">
-                <h2 class="card-title fw-bold mb-3">Change Connected Wallet</h2>
-
-                {% if current_wallet %}
-                <div class="mb-3">
-                    <label class="form-label text-muted">Current Wallet</label>
-                    <div class="form-control bg-dark text-light border-secondary" style="cursor: default;">
-                        {{ current_wallet[:10] }}...{{ current_wallet[-6:] }}
-                    </div>
+<div class="setup-bg d-flex align-items-center justify-content-center">
+    <div class="col-md-5 col-lg-4">
+        <div class="setup-card p-4 p-md-5">
+            <div class="text-center mb-4">
+                <div class="setup-icon" style="background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);">
+                    <i class="bi bi-arrow-repeat"></i>
                 </div>
-                {% endif %}
-
-                <div class="alert alert-warning">
-                    <i class="bi bi-exclamation-triangle me-2"></i>
-                    Change connected wallet?<br>
-                    <small>Current analytics data will be replaced with data from the new wallet.</small>
-                </div>
-
-                <form method="POST" id="changeForm">
-                    <input type="hidden" name="confirm" value="yes" id="confirmInput">
-
-                    <div class="mb-3">
-                        <label for="wallet_address" class="form-label fw-semibold">New TON Wallet Address</label>
-                        <input
-                            type="text"
-                            class="form-control bg-dark text-light border-secondary"
-                            id="wallet_address"
-                            name="wallet_address"
-                            placeholder="EQ..."
-                            required
-                            autocomplete="off"
-                            spellcheck="false"
-                        >
-                    </div>
-
-                    <div class="d-flex gap-2">
-                        <a href="{{ url_for('dashboard.index') }}" class="btn btn-outline-secondary flex-fill">Cancel</a>
-                        <button type="submit" class="btn btn-warning flex-fill fw-semibold" id="submitBtn">
-                            <i class="bi bi-arrow-repeat me-1"></i>Change Wallet
-                        </button>
-                    </div>
-                </form>
+                <h3 class="fw-bold mb-2" style="letter-spacing: -0.03em;">Change Wallet</h3>
+                <p style="font-size: 0.82rem; color: var(--text-muted);">
+                    Replace the connected wallet with a different one.
+                </p>
             </div>
+
+            {% if current_wallet %}
+            <div class="mb-3">
+                <div class="form-label">Current Wallet</div>
+                <div class="wallet-badge w-100 justify-content-center" style="padding: 0.5rem;">
+                    <span class="wallet-dot"></span>
+                    {{ current_wallet[:10] }}...{{ current_wallet[-6:] }}
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="alert alert-warning" style="font-size: 0.78rem;">
+                <i class="bi bi-exclamation-triangle me-1"></i>
+                Current analytics data will be replaced with data from the new wallet.
+            </div>
+
+            <form method="POST" id="changeForm">
+                <input type="hidden" name="confirm" value="yes">
+
+                <div class="mb-3">
+                    <label for="wallet_address" class="form-label">New Wallet Address</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="wallet_address"
+                        name="wallet_address"
+                        placeholder="EQ..."
+                        required
+                        autocomplete="off"
+                        spellcheck="false"
+                        style="font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;"
+                    >
+                </div>
+
+                <div class="d-flex gap-2">
+                    <a href="{{ url_for('dashboard.index') }}" class="btn btn-outline-secondary flex-fill">Cancel</a>
+                    <button type="submit" class="btn btn-primary flex-fill fw-semibold" id="submitBtn">
+                        <i class="bi bi-arrow-repeat me-1"></i>Change
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -55,7 +62,7 @@
 
 {% block scripts %}
 <script>
-document.getElementById('changeForm').addEventListener('submit', function(e) {
+document.getElementById('changeForm').addEventListener('submit', function() {
     const btn = document.getElementById('submitBtn');
     btn.disabled = true;
     btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Changing...';

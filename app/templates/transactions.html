@@ -2,55 +2,49 @@
 {% block title %}Transactions - TON Analytics{% endblock %}
 
 {% block content %}
-<div class="row mb-4">
-    <div class="col-12">
-        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
-            <div>
-                <h4 class="fw-bold mb-0">Transactions</h4>
-                <small class="text-muted">{{ total }} transactions found</small>
-            </div>
-            <div class="d-flex gap-2">
-                <a href="{{ url_for('dashboard.index') }}" class="btn btn-sm btn-outline-secondary">
-                    <i class="bi bi-arrow-left me-1"></i>Dashboard
-                </a>
-            </div>
-        </div>
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+    <div>
+        <h4 class="fw-bold mb-0" style="letter-spacing: -0.03em;">Transactions</h4>
+        <span style="font-size: 0.78rem; color: var(--text-muted);">{{ total }} total</span>
     </div>
+    <a href="{{ url_for('dashboard.index') }}" class="btn btn-sm btn-outline-secondary">
+        <i class="bi bi-arrow-left me-1"></i>Dashboard
+    </a>
 </div>
 
-<div class="card bg-dark border-secondary mb-4">
-    <div class="card-body">
+<div class="card mb-4">
+    <div class="card-body py-3">
         <form method="GET" class="row g-2 align-items-end">
-            <div class="col-md-2">
-                <label class="form-label small text-muted">Direction</label>
-                <select name="direction" class="form-select form-select-sm bg-dark text-light border-secondary">
+            <div class="col-6 col-md-2">
+                <label class="form-label">Direction</label>
+                <select name="direction" class="form-select form-select-sm">
                     <option value="ALL" {% if direction == 'ALL' %}selected{% endif %}>All</option>
                     <option value="IN" {% if direction == 'IN' %}selected{% endif %}>Incoming</option>
                     <option value="OUT" {% if direction == 'OUT' %}selected{% endif %}>Outgoing</option>
                     <option value="SELF" {% if direction == 'SELF' %}selected{% endif %}>Self</option>
                 </select>
             </div>
-            <div class="col-md-2">
-                <label class="form-label small text-muted">Min Amount</label>
-                <input type="number" step="any" name="min_amount" class="form-control form-control-sm bg-dark text-light border-secondary" placeholder="0" value="{{ min_amount or '' }}">
+            <div class="col-6 col-md-2">
+                <label class="form-label">Min Amount</label>
+                <input type="number" step="any" name="min_amount" class="form-control form-control-sm" placeholder="0" value="{{ min_amount or '' }}">
             </div>
-            <div class="col-md-2">
-                <label class="form-label small text-muted">Max Amount</label>
-                <input type="number" step="any" name="max_amount" class="form-control form-control-sm bg-dark text-light border-secondary" placeholder="∞" value="{{ max_amount or '' }}">
+            <div class="col-6 col-md-2">
+                <label class="form-label">Max Amount</label>
+                <input type="number" step="any" name="max_amount" class="form-control form-control-sm" placeholder="∞" value="{{ max_amount or '' }}">
             </div>
-            <div class="col-md-2">
-                <label class="form-label small text-muted">Date From</label>
-                <input type="date" name="date_from" class="form-control form-control-sm bg-dark text-light border-secondary" value="{{ date_from }}">
+            <div class="col-6 col-md-2">
+                <label class="form-label">From</label>
+                <input type="date" name="date_from" class="form-control form-control-sm" value="{{ date_from }}">
             </div>
-            <div class="col-md-2">
-                <label class="form-label small text-muted">Date To</label>
-                <input type="date" name="date_to" class="form-control form-control-sm bg-dark text-light border-secondary" value="{{ date_to }}">
+            <div class="col-6 col-md-2">
+                <label class="form-label">To</label>
+                <input type="date" name="date_to" class="form-control form-control-sm" value="{{ date_to }}">
             </div>
-            <div class="col-md-2">
-                <label class="form-label small text-muted">Search</label>
-                <input type="text" name="search" class="form-control form-control-sm bg-dark text-light border-secondary" placeholder="Hash, address..." value="{{ search }}">
+            <div class="col-6 col-md-2">
+                <label class="form-label">Search</label>
+                <input type="text" name="search" class="form-control form-control-sm" placeholder="Hash, address..." value="{{ search }}">
             </div>
-            <div class="col-12">
+            <div class="col-12 d-flex gap-2">
                 <button type="submit" class="btn btn-sm btn-primary"><i class="bi bi-search me-1"></i>Filter</button>
                 <a href="{{ url_for('transactions.index') }}" class="btn btn-sm btn-outline-secondary">Clear</a>
             </div>
@@ -58,7 +52,7 @@
     </div>
 </div>
 
-<div class="card bg-dark border-secondary">
+<div class="card">
     <div class="card-body p-0">
         <div class="table-responsive">
             <table class="table table-dark table-hover mb-0">
@@ -68,8 +62,8 @@
                         <th>Type</th>
                         <th>Asset</th>
                         <th>Amount</th>
-                        <th>From / To</th>
-                        <th>Fee</th>
+                        <th class="d-none d-md-table-cell">From / To</th>
+                        <th class="d-none d-lg-table-cell">Fee</th>
                         <th>Status</th>
                         <th>Tx</th>
                     </tr>
@@ -77,44 +71,39 @@
                 <tbody>
                     {% if transactions %}
                     {% for tx in transactions %}
-                    <tr class="tx-row" data-tx='{{ tx|serialize_tx }}' style="cursor: pointer;">
-                        <td>
-                            <small>{{ tx.timestamp.strftime('%d %b %Y %H:%M') if tx.timestamp else 'N/A' }}</small>
+                    <tr class="tx-row" data-tx='{{ tx|serialize_tx }}'>
+                        <td style="white-space: nowrap;">
+                            <span style="font-size: 0.78rem;">{{ tx.timestamp.strftime('%d %b %y') if tx.timestamp else 'N/A' }}</span>
+                            <br><span style="font-size: 0.68rem; color: var(--text-muted);">{{ tx.timestamp.strftime('%H:%M') if tx.timestamp else '' }}</span>
                         </td>
                         <td>
                             {% if tx.direction == 'IN' %}
-                            <span class="badge bg-success">IN</span>
+                            <span class="badge badge-in">IN</span>
                             {% elif tx.direction == 'OUT' %}
-                            <span class="badge bg-danger">OUT</span>
+                            <span class="badge badge-out">OUT</span>
                             {% elif tx.direction == 'SELF' %}
-                            <span class="badge bg-secondary">SELF</span>
+                            <span class="badge badge-self">SELF</span>
                             {% else %}
-                            <span class="badge bg-warning text-dark">{{ tx.direction }}</span>
+                            <span class="badge" style="background: rgba(245, 158, 11, 0.1); color: var(--warning);">{{ tx.direction }}</span>
                             {% endif %}
                         </td>
-                        <td><small>{{ tx.asset_symbol or 'TON' }}</small></td>
-                        <td class="{% if tx.direction == 'IN' %}text-success{% elif tx.direction == 'OUT' %}text-danger{% endif %}">
-                            <small class="fw-bold">
-                                {% if tx.direction == 'IN' %}+{% elif tx.direction == 'OUT' %}-{% endif %}{{ "%.4f"|format(tx.amount|float) }} {{ tx.asset_symbol or 'TON' }}
-                            </small>
-                        </td>
+                        <td><span style="font-size: 0.78rem; color: var(--text-muted);">{{ tx.asset_symbol or 'TON' }}</span></td>
                         <td>
-                            <small class="text-muted">
-                                {% if tx.direction == 'IN' %}
-                                    {{ tx.sender[:10] if tx.sender else 'N/A' }}...
-                                {% elif tx.direction == 'OUT' %}
-                                    {{ tx.receiver[:10] if tx.receiver else 'N/A' }}...
-                                {% else %}
-                                    {{ tx.sender[:10] if tx.sender else '' }}{% if tx.receiver %} → {{ tx.receiver[:10] }}...{% endif %}
-                                {% endif %}
-                            </small>
+                            <span class="fw-semibold" style="font-size: 0.82rem; color: {% if tx.direction == 'IN' %}var(--success){% elif tx.direction == 'OUT' %}var(--danger){% else %}var(--text-primary){% endif %};">
+                                {% if tx.direction == 'IN' %}+{% elif tx.direction == 'OUT' %}-{% endif %}{{ "%.4f"|format(tx.amount|float) }}
+                            </span>
                         </td>
-                        <td><small class="text-muted">{{ "%.6f"|format(tx.fee|float) }}</small></td>
-                        <td>
-                            <span class="badge bg-success-subtle text-success">{{ tx.status }}</span>
+                        <td class="d-none d-md-table-cell" style="max-width: 120px;">
+                            <code style="font-size: 0.7rem; color: var(--text-muted);">
+                                {% if tx.direction == 'IN' %}{{ tx.sender[:12] if tx.sender else 'N/A' }}{% elif tx.direction == 'OUT' %}{{ tx.receiver[:12] if tx.receiver else 'N/A' }}{% else %}{{ tx.sender[:8] if tx.sender else '' }}{% endif %}
+                            </code>
                         </td>
+                        <td class="d-none d-lg-table-cell">
+                            <span style="font-size: 0.75rem; color: var(--text-muted);">{{ "%.6f"|format(tx.fee|float) }}</span>
+                        </td>
+                        <td><span class="badge badge-success">{{ tx.status }}</span></td>
                         <td>
-                            <a href="https://tonviewer.com/transaction/{{ tx.tx_hash }}" target="_blank" class="btn btn-sm btn-outline-info py-0" onclick="event.stopPropagation();">
+                            <a href="https://tonviewer.com/transaction/{{ tx.tx_hash }}" target="_blank" class="btn btn-sm py-0" style="color: var(--accent); font-size: 0.75rem;" onclick="event.stopPropagation();">
                                 <i class="bi bi-box-arrow-up-right"></i>
                             </a>
                         </td>
@@ -122,8 +111,11 @@
                     {% endfor %}
                     {% else %}
                     <tr>
-                        <td colspan="8" class="text-center text-muted py-4">
-                            No transactions found matching your filters.
+                        <td colspan="8">
+                            <div class="empty-state">
+                                <i class="bi bi-inbox"></i>
+                                <p>No transactions found matching your filters.</p>
+                            </div>
                         </td>
                     </tr>
                     {% endif %}
@@ -133,11 +125,11 @@
     </div>
 
     {% if total_pages > 1 %}
-    <div class="card-footer bg-dark border-secondary d-flex flex-wrap justify-content-between align-items-center gap-2">
+    <div class="card-footer d-flex flex-wrap justify-content-between align-items-center gap-2 py-3">
         <div class="d-flex align-items-center gap-2">
-            <span class="text-muted small">Per page:</span>
+            <span style="font-size: 0.72rem; color: var(--text-muted);">Per page:</span>
             {% for ps in page_sizes %}
-            <a href="?page=1&per_page={{ ps }}&direction={{ direction }}&search={{ search }}" class="btn btn-sm {% if per_page == ps %}btn-primary{% else %}btn-outline-secondary{% endif %} py-0">{{ ps }}</a>
+            <a href="?page=1&per_page={{ ps }}&direction={{ direction }}&search={{ search }}" class="btn btn-sm py-0 {% if per_page == ps %}btn-primary{% else %}btn-outline-secondary{% endif %}" style="font-size: 0.72rem;">{{ ps }}</a>
             {% endfor %}
         </div>
         <nav>
@@ -165,17 +157,17 @@
 
 <div class="modal fade" id="txModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
-        <div class="modal-content bg-dark border-secondary">
-            <div class="modal-header border-secondary">
-                <h5 class="modal-title fw-bold">Transaction Details</h5>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold" style="font-size: 0.95rem;">Transaction Details</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body" id="txModalBody"></div>
-            <div class="modal-footer border-secondary">
-                <a href="#" target="_blank" class="btn btn-outline-info" id="txExplorerLink">
-                    <i class="bi bi-box-arrow-up-right me-1"></i>View on Explorer
+            <div class="modal-footer">
+                <a href="#" target="_blank" class="btn btn-sm btn-outline-info" id="txExplorerLink">
+                    <i class="bi bi-box-arrow-up-right me-1"></i>Explorer
                 </a>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -189,18 +181,18 @@ document.querySelectorAll('.tx-row').forEach(row => {
         const tx = JSON.parse(this.dataset.tx);
         const body = document.getElementById('txModalBody');
         body.innerHTML = `
-            <table class="table table-dark table-sm mb-0">
-                <tr><td class="text-muted" style="width:140px;">Transaction Hash</td><td><code>${tx.tx_hash}</code></td></tr>
-                <tr><td class="text-muted">Date</td><td>${tx.timestamp ? new Date(tx.timestamp).toLocaleString() : 'N/A'}</td></tr>
-                <tr><td class="text-muted">Block / LT</td><td>${tx.lt || 'N/A'}</td></tr>
-                <tr><td class="text-muted">Direction</td><td><span class="badge bg-${tx.direction === 'IN' ? 'success' : tx.direction === 'OUT' ? 'danger' : 'secondary'}">${tx.direction}</span></td></tr>
-                <tr><td class="text-muted">Sender</td><td><code>${tx.sender || 'N/A'}</code></td></tr>
-                <tr><td class="text-muted">Receiver</td><td><code>${tx.receiver || 'N/A'}</code></td></tr>
-                <tr><td class="text-muted">Amount</td><td class="fw-bold">${tx.direction === 'IN' ? '+' : tx.direction === 'OUT' ? '-' : ''}${tx.amount.toFixed(4)} ${tx.asset_symbol || 'TON'}</td></tr>
-                <tr><td class="text-muted">Fee</td><td>${tx.fee.toFixed(6)} TON</td></tr>
-                <tr><td class="text-muted">Comment</td><td>${tx.comment || 'None'}</td></tr>
-                <tr><td class="text-muted">Status</td><td><span class="badge bg-success">${tx.status}</span></td></tr>
-            </table>
+            <div class="row g-3">
+                <div class="col-12"><code style="font-size: 0.75rem; word-break: break-all;">${tx.tx_hash}</code></div>
+                <div class="col-sm-6"><div class="stat-mini-label">Date</div><div style="font-size: 0.85rem;">${tx.timestamp ? new Date(tx.timestamp).toLocaleString() : 'N/A'}</div></div>
+                <div class="col-sm-6"><div class="stat-mini-label">Block / LT</div><div style="font-size: 0.85rem;">${tx.lt || 'N/A'}</div></div>
+                <div class="col-sm-6"><div class="stat-mini-label">Direction</div><div><span class="badge badge-${tx.direction === 'IN' ? 'in' : tx.direction === 'OUT' ? 'out' : 'self'}">${tx.direction}</span></div></div>
+                <div class="col-sm-6"><div class="stat-mini-label">Status</div><div><span class="badge badge-success">${tx.status}</span></div></div>
+                <div class="col-12"><div class="stat-mini-label">Sender</div><code style="font-size: 0.72rem;">${tx.sender || 'N/A'}</code></div>
+                <div class="col-12"><div class="stat-mini-label">Receiver</div><code style="font-size: 0.72rem;">${tx.receiver || 'N/A'}</code></div>
+                <div class="col-sm-6"><div class="stat-mini-label">Amount</div><div class="fw-bold" style="color: ${tx.direction === 'IN' ? 'var(--success)' : tx.direction === 'OUT' ? 'var(--danger)' : 'var(--text-primary)'}; font-size: 1rem;">${tx.direction === 'IN' ? '+' : tx.direction === 'OUT' ? '-' : ''}${tx.amount.toFixed(4)} ${tx.asset_symbol || 'TON'}</div></div>
+                <div class="col-sm-6"><div class="stat-mini-label">Fee</div><div style="font-size: 0.85rem;">${tx.fee.toFixed(6)} TON</div></div>
+                ${tx.comment ? `<div class="col-12"><div class="stat-mini-label">Comment</div><div style="font-size: 0.85rem;">${tx.comment}</div></div>` : ''}
+            </div>
         `;
         document.getElementById('txExplorerLink').href = tx.explorer_url;
         new bootstrap.Modal(document.getElementById('txModal')).show();
