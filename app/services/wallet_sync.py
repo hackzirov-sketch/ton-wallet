@@ -53,7 +53,8 @@ def _classify_direction(tx: dict, wallet_address: str) -> str:
     for m in out_msgs:
         dest = m.get("destination", "")
         dest_norm = _normalize_address(dest)
-        if dest_norm and dest_norm != wallet_norm and m.get("value", 0) > 0:
+        val = int(m.get("value", 0) or 0)
+        if dest_norm and dest_norm != wallet_norm and val > 0:
             has_outgoing = True
             break
 
@@ -65,11 +66,12 @@ def _classify_direction(tx: dict, wallet_address: str) -> str:
             return "SELF"
         return "SELF"
 
-    if in_msg and in_msg.get("value", 0) > 0:
+    in_val = int(in_msg.get("value", 0) or 0)
+    if in_msg and in_val > 0:
         if in_dest_norm and in_dest_norm == wallet_norm:
             return "IN"
 
-    if in_msg and in_msg.get("value", 0) > 0:
+    if in_msg and in_val > 0:
         return "IN"
 
     return "UNKNOWN"
