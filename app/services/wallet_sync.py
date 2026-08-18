@@ -31,6 +31,8 @@ def _normalize_address(address: str) -> str:
     clean = address.strip().replace("-", "+").replace("_", "/")
     try:
         raw = base64.b64decode(clean)
+        if len(raw) >= 36:
+            return raw[4:36].hex().lower()
         return raw.hex().lower()
     except Exception:
         return address.lower().strip()
