@@ -158,6 +158,58 @@ def analytics_summary():
     })
 
 
+@api_bp.route("/debug/transactions")
+def debug_transactions():
+    from flask import current_app as app
+    from app.services.ton_client import TONClient
+    from app.services.wallet_sync import _normalize_address
+
+    setting = AppSetting.get_active_wallet()
+    if not setting:
+        return _json_response({"error": "No wallet"}, 404)
+
+    wallet = setting.wallet_address
+    wallet_norm = _normalize_address(wallet)
+
+    client = TONClient(
+        base_url=app.config.get("TON_API_BASE_URL", "https://toncenter.com/api/v2"),
+        timeout=30,
+        retries=2,
+    )
+
+    raw_txs = client.get_transactions(wallet, limit=5)
+    result = []
+    for tx in raw_txs[:3]:
+        in_msg = tx.get("in_msg", {})
+        out_msgs = tx.get("out_msgs", [])
+        sender = in_msg.get("source", "")
+        sender_norm = _normalize_address(sender)
+        dests = []
+        for m in out_msgs[:2]:
+            d = m.get("destination", "")
+            dests.append({
+                "raw": d,
+                "normalized": _normalize_address(d),
+            })
+        result.append({
+            "hash": tx.get("hash"),
+            "sender_raw": sender,
+            "sender_norm": sender_norm,
+            "destinations": dests,
+            "wallet_norm": wallet_norm,
+            "in_value": in_msg.get("value", 0),
+            "out_values": [m.get("value", 0) for m in out_msgs[:2]],
+            "match_sender": sender_norm == wallet_norm,
+        })
+
+    return _json_response({
+        "wallet": wallet,
+        "wallet_norm": wallet_norm,
+        "sample_txs": result,
+        "total_raw": len(raw_txs),
+    })
+
+
 def _serialize_tx(tx):
     return {
         "id": tx.id,
