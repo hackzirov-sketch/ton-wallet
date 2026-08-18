@@ -1,14 +1,14 @@
 {% extends "base.html" %}
-{% block title %}Transactions - TON Analytics{% endblock %}
+{% block title %}Tranzaksiyalar - TON Tahlil{% endblock %}
 
 {% block content %}
 <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
     <div>
-        <h4 class="fw-bold mb-0" style="letter-spacing: -0.03em;">Transactions</h4>
-        <span style="font-size: 0.78rem; color: var(--text-muted);">{{ total }} total</span>
+        <h4 class="fw-bold mb-0" style="letter-spacing: -0.03em;">Tranzaksiyalar</h4>
+        <span style="font-size: 0.78rem; color: var(--text-muted);">{{ total }} ta jami</span>
     </div>
     <a href="{{ url_for('dashboard.index') }}" class="btn btn-sm btn-outline-secondary">
-        <i class="bi bi-arrow-left me-1"></i>Dashboard
+        <i class="bi bi-arrow-left me-1"></i>Boshqaruv paneli
     </a>
 </div>
 
@@ -16,37 +16,37 @@
     <div class="card-body py-3">
         <form method="GET" class="row g-2 align-items-end">
             <div class="col-6 col-md-2">
-                <label class="form-label">Direction</label>
+                <label class="form-label">Yo'nalish</label>
                 <select name="direction" class="form-select form-select-sm">
-                    <option value="ALL" {% if direction == 'ALL' %}selected{% endif %}>All</option>
-                    <option value="IN" {% if direction == 'IN' %}selected{% endif %}>Incoming</option>
-                    <option value="OUT" {% if direction == 'OUT' %}selected{% endif %}>Outgoing</option>
-                    <option value="SELF" {% if direction == 'SELF' %}selected{% endif %}>Self</option>
+                    <option value="ALL" {% if direction == 'ALL' %}selected{% endif %}>Hammasi</option>
+                    <option value="IN" {% if direction == 'IN' %}selected{% endif %}>Kirim</option>
+                    <option value="OUT" {% if direction == 'OUT' %}selected{% endif %}>Chiqim</option>
+                    <option value="SELF" {% if direction == 'SELF' %}selected{% endif %}>O'ziga</option>
                 </select>
             </div>
             <div class="col-6 col-md-2">
-                <label class="form-label">Min Amount</label>
+                <label class="form-label">Min. miqdor</label>
                 <input type="number" step="any" name="min_amount" class="form-control form-control-sm" placeholder="0" value="{{ min_amount or '' }}">
             </div>
             <div class="col-6 col-md-2">
-                <label class="form-label">Max Amount</label>
+                <label class="form-label">Maks. miqdor</label>
                 <input type="number" step="any" name="max_amount" class="form-control form-control-sm" placeholder="∞" value="{{ max_amount or '' }}">
             </div>
             <div class="col-6 col-md-2">
-                <label class="form-label">From</label>
+                <label class="form-label">Dan</label>
                 <input type="date" name="date_from" class="form-control form-control-sm" value="{{ date_from }}">
             </div>
             <div class="col-6 col-md-2">
-                <label class="form-label">To</label>
+                <label class="form-label">Gacha</label>
                 <input type="date" name="date_to" class="form-control form-control-sm" value="{{ date_to }}">
             </div>
             <div class="col-6 col-md-2">
-                <label class="form-label">Search</label>
-                <input type="text" name="search" class="form-control form-control-sm" placeholder="Hash, address..." value="{{ search }}">
+                <label class="form-label">Qidirish</label>
+                <input type="text" name="search" class="form-control form-control-sm" placeholder="Hash, manzil..." value="{{ search }}">
             </div>
             <div class="col-12 d-flex gap-2">
-                <button type="submit" class="btn btn-sm btn-primary"><i class="bi bi-search me-1"></i>Filter</button>
-                <a href="{{ url_for('transactions.index') }}" class="btn btn-sm btn-outline-secondary">Clear</a>
+                <button type="submit" class="btn btn-sm btn-primary"><i class="bi bi-search me-1"></i>Filtr</button>
+                <a href="{{ url_for('transactions.index') }}" class="btn btn-sm btn-outline-secondary">Tozalash</a>
             </div>
         </form>
     </div>
@@ -58,14 +58,14 @@
             <table class="table table-dark table-hover mb-0">
                 <thead>
                     <tr>
-                        <th>Date</th>
-                        <th>Type</th>
-                        <th>Asset</th>
-                        <th>Amount</th>
-                        <th class="d-none d-md-table-cell">From / To</th>
-                        <th class="d-none d-lg-table-cell">Fee</th>
-                        <th>Status</th>
-                        <th>Tx</th>
+                        <th>Sana</th>
+                        <th>Turi</th>
+                        <th>Token</th>
+                        <th>Miqdor</th>
+                        <th class="d-none d-md-table-cell">Dan / Ga</th>
+                        <th class="d-none d-lg-table-cell">Komissiya</th>
+                        <th>Holat</th>
+                        <th>TX</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -78,11 +78,11 @@
                         </td>
                         <td>
                             {% if tx.direction == 'IN' %}
-                            <span class="badge badge-in">IN</span>
+                            <span class="badge badge-in">KIRIM</span>
                             {% elif tx.direction == 'OUT' %}
-                            <span class="badge badge-out">OUT</span>
+                            <span class="badge badge-out">CHIQIM</span>
                             {% elif tx.direction == 'SELF' %}
-                            <span class="badge badge-self">SELF</span>
+                            <span class="badge badge-self">O'ZIGA</span>
                             {% else %}
                             <span class="badge" style="background: rgba(245, 158, 11, 0.1); color: var(--warning);">{{ tx.direction }}</span>
                             {% endif %}
@@ -114,7 +114,7 @@
                         <td colspan="8">
                             <div class="empty-state">
                                 <i class="bi bi-inbox"></i>
-                                <p>No transactions found matching your filters.</p>
+                                <p>Filtrlaringizga mos tranzaksiya topilmadi.</p>
                             </div>
                         </td>
                     </tr>
@@ -127,7 +127,7 @@
     {% if total_pages > 1 %}
     <div class="card-footer d-flex flex-wrap justify-content-between align-items-center gap-2 py-3">
         <div class="d-flex align-items-center gap-2">
-            <span style="font-size: 0.72rem; color: var(--text-muted);">Per page:</span>
+            <span style="font-size: 0.72rem; color: var(--text-muted);">Sahifada:</span>
             {% for ps in page_sizes %}
             <a href="?page=1&per_page={{ ps }}&direction={{ direction }}&search={{ search }}" class="btn btn-sm py-0 {% if per_page == ps %}btn-primary{% else %}btn-outline-secondary{% endif %}" style="font-size: 0.72rem;">{{ ps }}</a>
             {% endfor %}
@@ -135,7 +135,7 @@
         <nav>
             <ul class="pagination pagination-sm mb-0">
                 <li class="page-item {% if page <= 1 %}disabled{% endif %}">
-                    <a class="page-link" href="?page={{ page - 1 }}&per_page={{ per_page }}&direction={{ direction }}&search={{ search }}&min_amount={{ min_amount or '' }}&max_amount={{ max_amount or '' }}&date_from={{ date_from }}&date_to={{ date_to }}">Prev</a>
+                    <a class="page-link" href="?page={{ page - 1 }}&per_page={{ per_page }}&direction={{ direction }}&search={{ search }}&min_amount={{ min_amount or '' }}&max_amount={{ max_amount or '' }}&date_from={{ date_from }}&date_to={{ date_to }}">Oldingi</a>
                 </li>
                 {% for p in range(1, total_pages + 1) %}
                 {% if p <= 3 or p > total_pages - 3 or (p >= page - 1 and p <= page + 1) %}
@@ -147,7 +147,7 @@
                 {% endif %}
                 {% endfor %}
                 <li class="page-item {% if page >= total_pages %}disabled{% endif %}">
-                    <a class="page-link" href="?page={{ page + 1 }}&per_page={{ per_page }}&direction={{ direction }}&search={{ search }}&min_amount={{ min_amount or '' }}&max_amount={{ max_amount or '' }}&date_from={{ date_from }}&date_to={{ date_to }}">Next</a>
+                    <a class="page-link" href="?page={{ page + 1 }}&per_page={{ per_page }}&direction={{ direction }}&search={{ search }}&min_amount={{ min_amount or '' }}&max_amount={{ max_amount or '' }}&date_from={{ date_from }}&date_to={{ date_to }}">Keyingi</a>
                 </li>
             </ul>
         </nav>
@@ -159,7 +159,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title fw-bold" style="font-size: 0.95rem;">Transaction Details</h5>
+                <h5 class="modal-title fw-bold" style="font-size: 0.95rem;">Tranzaksiya tafsilotlari</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body" id="txModalBody"></div>
@@ -167,7 +167,7 @@
                 <a href="#" target="_blank" class="btn btn-sm btn-outline-info" id="txExplorerLink">
                     <i class="bi bi-box-arrow-up-right me-1"></i>Explorer
                 </a>
-                <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Yopish</button>
             </div>
         </div>
     </div>
@@ -183,15 +183,15 @@ document.querySelectorAll('.tx-row').forEach(row => {
         body.innerHTML = `
             <div class="row g-3">
                 <div class="col-12"><code style="font-size: 0.75rem; word-break: break-all;">${tx.tx_hash}</code></div>
-                <div class="col-sm-6"><div class="stat-mini-label">Date</div><div style="font-size: 0.85rem;">${tx.timestamp ? new Date(tx.timestamp).toLocaleString() : 'N/A'}</div></div>
-                <div class="col-sm-6"><div class="stat-mini-label">Block / LT</div><div style="font-size: 0.85rem;">${tx.lt || 'N/A'}</div></div>
-                <div class="col-sm-6"><div class="stat-mini-label">Direction</div><div><span class="badge badge-${tx.direction === 'IN' ? 'in' : tx.direction === 'OUT' ? 'out' : 'self'}">${tx.direction}</span></div></div>
-                <div class="col-sm-6"><div class="stat-mini-label">Status</div><div><span class="badge badge-success">${tx.status}</span></div></div>
-                <div class="col-12"><div class="stat-mini-label">Sender</div><code style="font-size: 0.72rem;">${tx.sender || 'N/A'}</code></div>
-                <div class="col-12"><div class="stat-mini-label">Receiver</div><code style="font-size: 0.72rem;">${tx.receiver || 'N/A'}</code></div>
-                <div class="col-sm-6"><div class="stat-mini-label">Amount</div><div class="fw-bold" style="color: ${tx.direction === 'IN' ? 'var(--success)' : tx.direction === 'OUT' ? 'var(--danger)' : 'var(--text-primary)'}; font-size: 1rem;">${tx.direction === 'IN' ? '+' : tx.direction === 'OUT' ? '-' : ''}${tx.amount.toFixed(4)} ${tx.asset_symbol || 'TON'}</div></div>
-                <div class="col-sm-6"><div class="stat-mini-label">Fee</div><div style="font-size: 0.85rem;">${tx.fee.toFixed(6)} TON</div></div>
-                ${tx.comment ? `<div class="col-12"><div class="stat-mini-label">Comment</div><div style="font-size: 0.85rem;">${tx.comment}</div></div>` : ''}
+                <div class="col-sm-6"><div class="stat-mini-label">Sana</div><div style="font-size: 0.85rem;">${tx.timestamp ? new Date(tx.timestamp).toLocaleString() : 'N/A'}</div></div>
+                <div class="col-sm-6"><div class="stat-mini-label">Blok / LT</div><div style="font-size: 0.85rem;">${tx.lt || 'N/A'}</div></div>
+                <div class="col-sm-6"><div class="stat-mini-label">Yo'nalish</div><div><span class="badge badge-${tx.direction === 'IN' ? 'in' : tx.direction === 'OUT' ? 'out' : 'self'}">${tx.direction === 'IN' ? 'KIRIM' : tx.direction === 'OUT' ? 'CHIQIM' : "O'ZIGA"}</span></div></div>
+                <div class="col-sm-6"><div class="stat-mini-label">Holat</div><div><span class="badge badge-success">${tx.status}</span></div></div>
+                <div class="col-12"><div class="stat-mini-label">Yuboruvchi</div><code style="font-size: 0.72rem;">${tx.sender || 'N/A'}</code></div>
+                <div class="col-12"><div class="stat-mini-label">Qabul qiluvchi</div><code style="font-size: 0.72rem;">${tx.receiver || 'N/A'}</code></div>
+                <div class="col-sm-6"><div class="stat-mini-label">Miqdor</div><div class="fw-bold" style="color: ${tx.direction === 'IN' ? 'var(--success)' : tx.direction === 'OUT' ? 'var(--danger)' : 'var(--text-primary)'}; font-size: 1rem;">${tx.direction === 'IN' ? '+' : tx.direction === 'OUT' ? '-' : ''}${tx.amount.toFixed(4)} ${tx.asset_symbol || 'TON'}</div></div>
+                <div class="col-sm-6"><div class="stat-mini-label">Komissiya</div><div style="font-size: 0.85rem;">${tx.fee.toFixed(6)} TON</div></div>
+                ${tx.comment ? `<div class="col-12"><div class="stat-mini-label">Izoh</div><div style="font-size: 0.85rem;">${tx.comment}</div></div>` : ''}
             </div>
         `;
         document.getElementById('txExplorerLink').href = tx.explorer_url;

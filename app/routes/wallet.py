@@ -17,7 +17,7 @@ def setup():
     if request.method == "POST":
         address = request.form.get("wallet_address", "").strip()
         if not validate_ton_address(address):
-            flash("Invalid TON wallet address. Please enter a valid address starting with EQ or UQ.", "error")
+            flash("Noto'g'ri TON hamyor manzili. Iltimos, EQ yoki UQ bilan boshlanadigan to'g'ri manzil kiriting.", "error")
             return render_template("wallet_setup.html")
 
         address = normalize_address(address)
@@ -25,9 +25,9 @@ def setup():
 
         try:
             sync_wallet(address, current_app.config)
-            flash("Wallet connected and synced successfully!", "success")
+            flash("Hamyor muvaffaqiyatli ulandi va sinxronlashtirildi!", "success")
         except Exception as e:
-            flash(f"Wallet saved but sync failed: {str(e)}. You can retry from the dashboard.", "warning")
+            flash(f"Hamyor saqlandi, lekin sinxronlash muvaffaqiyatsiz bo'ldi: {str(e)}. Boshqaruv panelidan qayta urinib ko'ring.", "warning")
 
         return redirect(url_for("dashboard.index"))
 
@@ -43,11 +43,11 @@ def change_wallet():
         confirm = request.form.get("confirm", "")
 
         if confirm != "yes":
-            flash("Please confirm the wallet change.", "error")
+            flash("Iltimos, hamyor o'zgartirishni tasdiqlang.", "error")
             return render_template("change_wallet.html", current_wallet=setting.wallet_address if setting else None)
 
         if not validate_ton_address(address):
-            flash("Invalid TON wallet address.", "error")
+            flash("Noto'g'ri TON hamyor manzili.", "error")
             return render_template("change_wallet.html", current_wallet=setting.wallet_address if setting else None)
 
         address = normalize_address(address)
@@ -62,9 +62,9 @@ def change_wallet():
 
         try:
             sync_wallet(address, current_app.config)
-            flash("Wallet changed and synced successfully!", "success")
+            flash("Hamyor muvaffaqiyatli o'zgartirildi va sinxronlashtirildi!", "success")
         except Exception as e:
-            flash(f"New wallet saved but sync failed: {str(e)}. You can retry from the dashboard.", "warning")
+            flash(f"Yangi hamyor saqlandi, lekin sinxronlash muvaffaqiyatsiz bo'ldi: {str(e)}. Boshqaruv panelidan qayta urinib ko'ring.", "warning")
 
         return redirect(url_for("dashboard.index"))
 

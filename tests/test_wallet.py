@@ -70,7 +70,7 @@ class TestWalletSetupRoute:
     def test_setup_page_loads(self, client, db):
         resp = client.get("/setup")
         assert resp.status_code == 200
-        assert b"Connect TON Wallet" in resp.data
+        assert b"Hamyorni ulash" in resp.data
 
     def test_setup_redirects_if_wallet_set(self, client, db):
         from app.models import AppSetting
@@ -84,7 +84,7 @@ class TestWalletSetupRoute:
 
     def test_setup_rejects_invalid_address(self, client, db):
         resp = client.post("/setup", data={"wallet_address": "invalid"}, follow_redirects=True)
-        assert b"Invalid TON wallet address" in resp.data
+        assert b"TON hamyor manzili" in resp.data
 
     def test_dashboard_redirects_without_wallet(self, client, db):
         resp = client.get("/", follow_redirects=False)

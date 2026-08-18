@@ -1,26 +1,26 @@
 {% extends "base.html" %}
-{% block title %}Dashboard - TON Analytics{% endblock %}
+{% block title %}Boshqaruv paneli - TON Tahlil{% endblock %}
 
 {% block content %}
 <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
     <div>
-        <h4 class="fw-bold mb-0" style="letter-spacing: -0.03em;">Dashboard</h4>
+        <h4 class="fw-bold mb-0" style="letter-spacing: -0.03em;">Boshqaruv paneli</h4>
         <div class="d-flex align-items-center gap-2 mt-1">
             <code style="font-size: 0.78rem;">{{ truncated_wallet }}</code>
-            <button class="btn btn-sm py-0" onclick="copyAddress()" title="Copy full address" style="font-size: 0.72rem; color: var(--accent);">
+            <button class="btn btn-sm py-0" onclick="copyAddress()" title="To'liq manzilni nusxalash" style="font-size: 0.72rem; color: var(--accent);">
                 <i class="bi bi-clipboard"></i>
             </button>
-            <a href="{{ explorer_url }}" target="_blank" class="btn btn-sm py-0" title="View on explorer" style="font-size: 0.72rem; color: var(--accent);">
+            <a href="{{ explorer_url }}" target="_blank" class="btn btn-sm py-0" title="Explorer'da ko'rish" style="font-size: 0.72rem; color: var(--accent);">
                 <i class="bi bi-box-arrow-up-right"></i>
             </a>
         </div>
     </div>
     <div class="d-flex gap-2">
         <button class="btn btn-sm btn-outline-success" id="refreshBtn" onclick="syncWallet()">
-            <i class="bi bi-arrow-clockwise me-1"></i>Refresh
+            <i class="bi bi-arrow-clockwise me-1"></i>Yangilash
         </button>
         <a href="{{ url_for('wallet.change_wallet') }}" class="btn btn-sm btn-outline-warning">
-            <i class="bi bi-arrow-repeat me-1"></i>Change
+            <i class="bi bi-arrow-repeat me-1"></i>O'zgartirish
         </a>
     </div>
 </div>
@@ -33,7 +33,7 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
-                        <div class="stat-label">Balance</div>
+                        <div class="stat-label">Balans</div>
                         {% set balance = stats.total_incoming - stats.total_outgoing %}
                         <div class="stat-value {% if balance >= 0 %}text-positive{% else %}text-negative{% endif %}">
                             {{ "%.2f"|format(balance) }}
@@ -58,7 +58,7 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
-                        <div class="stat-label">Received</div>
+                        <div class="stat-label">Kirim</div>
                         <div class="stat-value text-positive">+{{ "%.2f"|format(stats.total_incoming) }}</div>
                         <div class="stat-sub">TON</div>
                     </div>
@@ -75,7 +75,7 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
-                        <div class="stat-label">Sent</div>
+                        <div class="stat-label">Chiqim</div>
                         <div class="stat-value text-negative">-{{ "%.2f"|format(stats.total_outgoing) }}</div>
                         <div class="stat-sub">TON</div>
                     </div>
@@ -92,7 +92,7 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
-                        <div class="stat-label">Net Flow</div>
+                        <div class="stat-label">Sof oqim</div>
                         {% set net = stats.net_cash_flow %}
                         <div class="stat-value {% if net >= 0 %}text-positive{% else %}text-negative{% endif %}">
                             {% if net >= 0 %}+{% endif %}{{ "%.2f"|format(net) }}
@@ -111,25 +111,25 @@
 <div class="row g-3 mb-4">
     <div class="col-6 col-lg-3">
         <div class="stat-mini">
-            <div class="stat-mini-label">Transactions</div>
+            <div class="stat-mini-label">Tranzaksiyalar</div>
             <div class="stat-mini-value">{{ stats.transaction_count }}</div>
         </div>
     </div>
     <div class="col-6 col-lg-3">
         <div class="stat-mini">
-            <div class="stat-mini-label">Total Fees</div>
+            <div class="stat-mini-label">Umumiy komissiya</div>
             <div class="stat-mini-value">{{ "%.4f"|format(stats.total_fees) }} <span style="color: var(--text-muted); font-size: 0.75rem;">TON</span></div>
         </div>
     </div>
     <div class="col-6 col-lg-3">
         <div class="stat-mini">
-            <div class="stat-mini-label">Active Days</div>
+            <div class="stat-mini-label">Faol kunlar</div>
             <div class="stat-mini-value">{{ stats.active_days }}</div>
         </div>
     </div>
     <div class="col-6 col-lg-3">
         <div class="stat-mini">
-            <div class="stat-mini-label">Largest TX</div>
+            <div class="stat-mini-label">Eng katta tranzaksiya</div>
             <div class="stat-mini-value">{{ "%.2f"|format(stats.largest_incoming) }} <span style="color: var(--text-muted); font-size: 0.75rem;">TON</span></div>
         </div>
     </div>
@@ -139,13 +139,13 @@
 <div class="row g-3 mb-4">
     <div class="col-sm-6">
         <div class="stat-mini" style="border-left: 3px solid var(--success);">
-            <div class="stat-mini-label">TON Price</div>
+            <div class="stat-mini-label">TON narxi</div>
             <div class="stat-mini-value text-positive">${{ "%.2f"|format(price_data.price_usd) }}</div>
         </div>
     </div>
     <div class="col-sm-6">
         <div class="stat-mini" style="border-left: 3px solid var(--accent);">
-            <div class="stat-mini-label">Wallet Value</div>
+            <div class="stat-mini-label">Hamyor qiymati</div>
             <div class="stat-mini-value" style="color: var(--accent);">${{ "%.2f"|format(price_data.value_usd) }}</div>
         </div>
     </div>
@@ -156,11 +156,11 @@
     <div class="col-lg-8">
         <div class="card chart-card h-100">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <span class="section-title mb-0"><i class="bi bi-activity"></i>Activity</span>
+                <span class="section-title mb-0"><i class="bi bi-activity"></i>Faollik</span>
                 <div class="btn-group btn-group-sm" id="activityRange">
-                    <button class="btn btn-outline-secondary active" data-days="7">7D</button>
-                    <button class="btn btn-outline-secondary" data-days="30">30D</button>
-                    <button class="btn btn-outline-secondary" data-days="90">90D</button>
+                    <button class="btn btn-outline-secondary active" data-days="7">7K</button>
+                    <button class="btn btn-outline-secondary" data-days="30">30K</button>
+                    <button class="btn btn-outline-secondary" data-days="90">90K</button>
                     <button class="btn btn-outline-secondary" data-days="365">1Y</button>
                 </div>
             </div>
@@ -172,7 +172,7 @@
     <div class="col-lg-4">
         <div class="card chart-card h-100">
             <div class="card-header">
-                <span class="section-title mb-0"><i class="bi bi-pie-chart"></i>In / Out</span>
+                <span class="section-title mb-0"><i class="bi bi-pie-chart"></i>Kirim / Chiqim</span>
             </div>
             <div class="card-body d-flex align-items-center justify-content-center">
                 <canvas id="incomingOutgoingChart" height="220"></canvas>
@@ -185,7 +185,7 @@
     <div class="col-12">
         <div class="card chart-card">
             <div class="card-header">
-                <span class="section-title mb-0"><i class="bi bi-bar-chart-line"></i>Monthly Cash Flow</span>
+                <span class="section-title mb-0"><i class="bi bi-bar-chart-line"></i>Oylik pul oqimi</span>
             </div>
             <div class="card-body">
                 <canvas id="monthlyChart" height="180"></canvas>
@@ -198,12 +198,12 @@
     <div class="col-lg-5">
         <div class="card h-100">
             <div class="card-header">
-                <span class="section-title mb-0"><i class="bi bi-cash-stack"></i>Profit / Loss</span>
+                <span class="section-title mb-0"><i class="bi bi-cash-stack"></i>foyda / Zarar</span>
             </div>
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <div>
-                        <div class="stat-mini-label">Net Cash Flow</div>
+                        <div class="stat-mini-label">Sof pul oqimi</div>
                         <div class="stat-value {% if stats.net_cash_flow >= 0 %}text-positive{% else %}text-negative{% endif %}" style="font-size: 1.25rem;">
                             {% if stats.net_cash_flow >= 0 %}+{% endif %}{{ "%.4f"|format(stats.net_cash_flow) }} TON
                         </div>
@@ -213,8 +213,8 @@
                 <div class="d-flex align-items-start gap-2 mt-2">
                     <i class="bi bi-info-circle" style="color: var(--warning); margin-top: 2px;"></i>
                     <div>
-                        <div style="font-size: 0.8rem; color: var(--warning);">Investment P/L unavailable</div>
-                        <div style="font-size: 0.72rem; color: var(--text-muted);">Historical price and cost-basis data required.</div>
+                        <div style="font-size: 0.8rem; color: var(--warning);">Investitsiya foydasi/ziyoni mavjud emas</div>
+                        <div style="font-size: 0.72rem; color: var(--text-muted);">Tarixiy narx va xarajat asosi kerak.</div>
                     </div>
                 </div>
             </div>
@@ -223,49 +223,49 @@
     <div class="col-lg-7">
         <div class="card h-100">
             <div class="card-header">
-                <span class="section-title mb-0"><i class="bi bi-bar-chart-steps"></i>Summary</span>
+                <span class="section-title mb-0"><i class="bi bi-bar-chart-steps"></i>Umumiy ko'rinish</span>
             </div>
             <div class="card-body">
                 <div class="row g-3">
                     <div class="col-6">
                         <div class="d-flex justify-content-between py-1" style="border-bottom: 1px solid var(--border-color);">
-                            <span style="font-size: 0.78rem; color: var(--text-muted);">Largest In</span>
+                            <span style="font-size: 0.78rem; color: var(--text-muted);">Eng katta kirim</span>
                             <span style="font-size: 0.78rem; font-weight: 600;">{{ "%.4f"|format(stats.largest_incoming) }}</span>
                         </div>
                     </div>
                     <div class="col-6">
                         <div class="d-flex justify-content-between py-1" style="border-bottom: 1px solid var(--border-color);">
-                            <span style="font-size: 0.78rem; color: var(--text-muted);">Largest Out</span>
+                            <span style="font-size: 0.78rem; color: var(--text-muted);">Eng katta chiqim</span>
                             <span style="font-size: 0.78rem; font-weight: 600;">{{ "%.4f"|format(stats.largest_outgoing) }}</span>
                         </div>
                     </div>
                     <div class="col-6">
                         <div class="d-flex justify-content-between py-1" style="border-bottom: 1px solid var(--border-color);">
-                            <span style="font-size: 0.78rem; color: var(--text-muted);">Avg In</span>
+                            <span style="font-size: 0.78rem; color: var(--text-muted);">O'rtacha kirim</span>
                             <span style="font-size: 0.78rem; font-weight: 600;">{{ "%.4f"|format(stats.average_incoming) }}</span>
                         </div>
                     </div>
                     <div class="col-6">
                         <div class="d-flex justify-content-between py-1" style="border-bottom: 1px solid var(--border-color);">
-                            <span style="font-size: 0.78rem; color: var(--text-muted);">Avg Out</span>
+                            <span style="font-size: 0.78rem; color: var(--text-muted);">O'rtacha chiqim</span>
                             <span style="font-size: 0.78rem; font-weight: 600;">{{ "%.4f"|format(stats.average_outgoing) }}</span>
                         </div>
                     </div>
                     <div class="col-6">
                         <div class="d-flex justify-content-between py-1" style="border-bottom: 1px solid var(--border-color);">
-                            <span style="font-size: 0.78rem; color: var(--text-muted);">Total Fees</span>
+                            <span style="font-size: 0.78rem; color: var(--text-muted);">Umumiy komissiya</span>
                             <span style="font-size: 0.78rem; font-weight: 600;">{{ "%.6f"|format(stats.total_fees) }}</span>
                         </div>
                     </div>
                     <div class="col-6">
                         <div class="d-flex justify-content-between py-1" style="border-bottom: 1px solid var(--border-color);">
-                            <span style="font-size: 0.78rem; color: var(--text-muted);">First TX</span>
+                            <span style="font-size: 0.78rem; color: var(--text-muted);">Birinchi tranzaksiya</span>
                             <span style="font-size: 0.78rem; font-weight: 500;">{{ stats.first_transaction_date.strftime('%d %b %Y') if stats.first_transaction_date else 'N/A' }}</span>
                         </div>
                     </div>
                     <div class="col-6">
                         <div class="d-flex justify-content-between py-1">
-                            <span style="font-size: 0.78rem; color: var(--text-muted);">Latest TX</span>
+                            <span style="font-size: 0.78rem; color: var(--text-muted);">So'nggi tranzaksiya</span>
                             <span style="font-size: 0.78rem; font-weight: 500;">{{ stats.latest_transaction_date.strftime('%d %b %Y') if stats.latest_transaction_date else 'N/A' }}</span>
                         </div>
                     </div>

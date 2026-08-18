@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}{{ code }} - TON Analytics{% endblock %}
+{% block title %}{{ code }} - TON Tahlil{% endblock %}
 
 {% block content %}
 <div class="d-flex align-items-center justify-content-center" style="min-height: 60vh;">
@@ -8,13 +8,13 @@
         <h4 class="fw-bold mb-2" style="color: var(--text-primary);">{{ error }}</h4>
         <p style="font-size: 0.85rem; color: var(--text-muted); max-width: 400px; margin: 0 auto 1.5rem;">
             {% if code == 404 %}
-            The page you're looking for doesn't exist or has been moved.
+            Siz qidirgan sahifa mavjud emas yoki ko'chirilgan.
             {% else %}
-            Something went wrong. Please try again.
+            Nimadir xato ketdi. Iltimos, qayta urinib ko'ring.
             {% endif %}
         </p>
         <a href="{{ url_for('dashboard.index') }}" class="btn btn-primary px-4">
-            <i class="bi bi-house me-1"></i>Go Home
+            <i class="bi bi-house me-1"></i>Bosh sahifa
         </a>
     </div>
 </div>

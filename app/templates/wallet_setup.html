@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Connect Wallet - TON Analytics{% endblock %}
+{% block title %}Hamyorni ulash - TON Tahlil{% endblock %}
 
 {% block content %}
 <div class="setup-bg d-flex align-items-center justify-content-center">
@@ -8,14 +8,14 @@
             <div class="setup-icon">
                 <i class="bi bi-hexagon-fill"></i>
             </div>
-            <h3 class="fw-bold mb-2" style="letter-spacing: -0.03em;">Connect TON Wallet</h3>
+            <h3 class="fw-bold mb-2" style="letter-spacing: -0.03em;">TON hamyorni ulash</h3>
             <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 1.5rem;">
-                Enter a TON wallet address to start analyzing its transaction history.
+                Tranzaksiya tarixini tahlil qilish uchun TON hamyor manzilini kiriting.
             </p>
 
             <form method="POST" id="walletForm">
                 <div class="mb-3 text-start">
-                    <label for="wallet_address" class="form-label">Wallet Address</label>
+                    <label for="wallet_address" class="form-label">Hamyor manzili</label>
                     <input
                         type="text"
                         class="form-control"
@@ -30,14 +30,14 @@
                 </div>
 
                 <button type="submit" class="btn btn-primary w-100 fw-semibold py-2" id="submitBtn">
-                    <i class="bi bi-search me-2"></i>Analyze Wallet
+                    <i class="bi bi-search me-2"></i>Hamyorni tahlil qilish
                 </button>
             </form>
 
             <div class="mt-4 pt-3" style="border-top: 1px solid var(--border-color);">
                 <div class="d-flex align-items-center justify-content-center gap-2" style="font-size: 0.72rem; color: var(--text-muted);">
                     <i class="bi bi-shield-check" style="color: var(--success);"></i>
-                    Read-only. No private keys or seed phrases required.
+                    Faqat o'qish uchun. Maxfiy kalitlar yoki seed kerak emas.
                 </div>
             </div>
         </div>
@@ -50,7 +50,7 @@
 document.getElementById('walletForm').addEventListener('submit', function() {
     const btn = document.getElementById('submitBtn');
     btn.disabled = true;
-    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Analyzing...';
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Tahlil qilinmoqda...';
 });
 </script>
 {% endblock %}
