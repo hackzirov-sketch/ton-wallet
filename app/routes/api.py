@@ -191,8 +191,12 @@ def debug_transactions():
                 "raw": d,
                 "normalized": _normalize_address(d),
             })
+        tx_id = tx.get("transaction_id", {})
+        tx_hash = tx_id.get("hash", "") or tx.get("hash", "")
+        lt = tx_id.get("lt") or tx.get("lt")
         result.append({
-            "hash": tx.get("hash"),
+            "hash": tx_hash,
+            "lt": lt,
             "sender_raw": sender,
             "sender_norm": sender_norm,
             "destinations": dests,

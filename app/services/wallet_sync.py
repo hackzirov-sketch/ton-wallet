@@ -118,8 +118,9 @@ def _store_transactions(wallet_address: str, raw_transactions: list) -> int:
     logger.info("Storing %d raw transactions for %s", len(raw_transactions), wallet_address[:20])
 
     for tx in raw_transactions:
-        tx_hash = tx.get("hash", "")
-        lt = tx.get("lt")
+        tx_id = tx.get("transaction_id", {})
+        tx_hash = tx_id.get("hash", "") or tx.get("hash", "")
+        lt = tx_id.get("lt") or tx.get("lt")
         if not tx_hash:
             continue
 

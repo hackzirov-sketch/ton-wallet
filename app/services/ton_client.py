@@ -112,7 +112,8 @@ class TONClient:
 
             new_count = 0
             for tx in txs:
-                tx_hash = tx.get("hash", "")
+                tx_id = tx.get("transaction_id", {})
+                tx_hash = tx_id.get("hash", "") or tx.get("hash", "")
                 if tx_hash and tx_hash not in seen_hashes:
                     seen_hashes.add(tx_hash)
                     all_txs.append(tx)
@@ -121,7 +122,8 @@ class TONClient:
             if new_count == 0:
                 break
 
-            last_lt = txs[-1].get("lt")
+            last_tx_id = txs[-1].get("transaction_id", {})
+            last_lt = last_tx_id.get("lt") or txs[-1].get("lt")
             if last_lt == before_lt:
                 break
             before_lt = last_lt
