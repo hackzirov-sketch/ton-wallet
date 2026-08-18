@@ -260,13 +260,13 @@
                     <div class="col-6">
                         <div class="d-flex justify-content-between py-1" style="border-bottom: 1px solid var(--border-color);">
                             <span style="font-size: 0.78rem; color: var(--text-muted);">Birinchi tranzaksiya</span>
-                            <span style="font-size: 0.78rem; font-weight: 500;">{{ stats.first_transaction_date.strftime('%d %b %Y') if stats.first_transaction_date else 'N/A' }}</span>
+                            <span style="font-size: 0.78rem; font-weight: 500;">{{ stats.first_transaction_date|uz_date('full') }}</span>
                         </div>
                     </div>
                     <div class="col-6">
                         <div class="d-flex justify-content-between py-1">
                             <span style="font-size: 0.78rem; color: var(--text-muted);">So'nggi tranzaksiya</span>
-                            <span style="font-size: 0.78rem; font-weight: 500;">{{ stats.latest_transaction_date.strftime('%d %b %Y') if stats.latest_transaction_date else 'N/A' }}</span>
+                            <span style="font-size: 0.78rem; font-weight: 500;">{{ stats.latest_transaction_date|uz_date('full') }}</span>
                         </div>
                     </div>
                 </div>

@@ -73,7 +73,7 @@
                     {% for tx in transactions %}
                     <tr class="tx-row" data-tx='{{ tx|serialize_tx }}'>
                         <td style="white-space: nowrap;">
-                            <span style="font-size: 0.78rem;">{{ tx.timestamp.strftime('%d %b %y') if tx.timestamp else 'N/A' }}</span>
+                            <span style="font-size: 0.78rem;">{{ tx.timestamp|uz_date }}</span>
                             <br><span style="font-size: 0.68rem; color: var(--text-muted);">{{ tx.timestamp.strftime('%H:%M') if tx.timestamp else '' }}</span>
                         </td>
                         <td>

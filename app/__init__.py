@@ -55,11 +55,11 @@ def _register_error_handlers(app):
 
     @app.errorhandler(404)
     def not_found(e):
-        return render_template("error.html", error="Page not found", code=404), 404
+        return render_template("error.html", error="Sahifa topilmadi", code=404), 404
 
     @app.errorhandler(500)
     def server_error(e):
-        return render_template("error.html", error="Internal server error", code=500), 500
+        return render_template("error.html", error="Ichki xatolik", code=500), 500
 
 
 def _register_context_processors(app):
@@ -69,6 +69,12 @@ def _register_context_processors(app):
         def get_active_wallet():
             return AppSetting.get_active_wallet()
         return dict(get_active_wallet=get_active_wallet)
+
+
+UZ_MONTHS = {
+    1: "Yan", 2: "Fev", 3: "Mar", 4: "Apr", 5: "May", 6: "Iyun",
+    7: "Iyul", 8: "Avg", 9: "Sen", 10: "Okt", 11: "Noy", 12: "Dek",
+}
 
 
 def _register_filters(app):
@@ -88,4 +94,21 @@ def _register_filters(app):
             "explorer_url": tx.explorer_url,
         })
 
+    def uz_date(dt, fmt="short"):
+        if not dt:
+            return "N/A"
+        day = dt.day
+        month = UZ_MONTHS.get(dt.month, "")
+        year = dt.year
+        if fmt == "full":
+            return f"{day} {month} {year}"
+        return f"{day} {month} {str(year)[2:]}"
+
+    def uz_datetime(dt):
+        if not dt:
+            return "N/A"
+        return f"{uz_date(dt)} {dt.strftime('%H:%M')}"
+
     app.jinja_env.filters["serialize_tx"] = serialize_tx
+    app.jinja_env.filters["uz_date"] = uz_date
+    app.jinja_env.filters["uz_datetime"] = uz_datetime
